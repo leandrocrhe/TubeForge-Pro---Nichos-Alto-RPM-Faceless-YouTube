@@ -1,0 +1,6 @@
+{
+  "name": "TubeForge Pro - Nichos Alto RPM & Faceless YouTube",
+  "description": "Radar de nichos de alto RPM, calculadora de proyecciones 360°, comparador cara a cara, generador de hooks virales y SOPs automatizados para YouTube.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es" class="h-full bg-slate-950 text-slate-100">
+  <head>
+    <script>
+      // Suppress Vite HMR WebSocket connection errors in cloud proxy iframe environment
+      (function() {
+        if (typeof window !== 'undefined') {
+          // 1. Shim Vite HMR WebSocket connections to remain safely open as no-op
+          var OriginalWS = window.WebSocket;
+          if (OriginalWS) {
+            window.WebSocket = function(url, protocols) {
+              if (
+                protocols === 'vite-hmr' || 
+                protocols === 'vite-ping' || 
+                (typeof url === 'string' && (url.includes(':24678') || url.includes('token=')))
+              ) {
+                var dummy = {
+                  readyState: 1, // OPEN
+                  OPEN: 1,
+                  CLOSED: 3,
+                  CLOSING: 2,
+                  CONNECTING: 0,
+                  url: url,
+                  protocol: protocols || 'vite-hmr',
+                  send: function() {},
+                  close: function() {},
+                  addEventListener: function(type, cb) {
+                    if (type === 'open') {
+                      setTimeout(cb, 0);
+                    }
+                  },
+                  removeEventListener: function() {},
+                  dispatchEvent: function() { return true; }
+                };
+                return dummy;
+              }
+              return new OriginalWS(url, protocols);
+            };
+            window.WebSocket.prototype = OriginalWS.prototype;
+            window.WebSocket.CONNECTING = OriginalWS.CONNECTING;
+            window.WebSocket.OPEN = OriginalWS.OPEN;
+            window.WebSocket.CLOSING = OriginalWS.CLOSING;
+            window.WebSocket.CLOSED = OriginalWS.CLOSED;
+          }
+
+          // 2. Global suppression for unhandled WebSocket / Vite HMR rejections
+          window.addEventListener('unhandledrejection', function(event) {
+            var msg = event.reason ? (event.reason.message || String(event.reason)) : '';
+            if (
+              msg.includes('WebSocket') ||
+              msg.includes('vite') ||
+              msg.includes('vite-hmr') ||
+              msg.includes('vite:ws')
+            ) {
+              event.preventDefault();
+              event.stopImmediatePropagation();
+            }
+          }, true);
+
+          // 3. Global suppression for error events
+          window.addEventListener('error', function(event) {
+            var msg = event.message || (event.error && event.error.message) || '';
+            if (
+              msg.includes('WebSocket') ||
+              msg.includes('vite') ||
+              msg.includes('vite-hmr') ||
+              msg.includes('vite:ws')
+            ) {
+              event.preventDefault();
+              event.stopImmediatePropagation();
+            }
+          }, true);
+        }
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TubeForge Pro | Inteligencia de Nichos de Alto RPM para YouTube</title>
+    <meta name="description" content="Radar de nichos de alto RPM, calculadora de proyecciones 360°, comparador cara a cara, generador de hooks virales y SOPs automatizados para YouTube." />
+    <meta property="og:title" content="TubeForge Pro | Inteligencia de Nichos de Alto RPM para YouTube" />
+    <meta property="og:description" content="Radar de nichos de alto RPM, calculadora de proyecciones 360°, comparador cara a cara, generador de hooks virales y SOPs automatizados para YouTube." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="h-full bg-slate-950 text-slate-100 font-sans antialiased selection:bg-rose-500 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
