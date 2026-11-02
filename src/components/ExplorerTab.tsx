@@ -139,70 +139,119 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({
   return (
     <div className="space-y-6">
       {/* Search & Control Filter Bar */}
-      <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex flex-col xl:flex-row gap-4 items-stretch xl:items-center justify-between shadow-xl backdrop-blur-sm">
-        {/* Search Input */}
-        <div className="relative w-full xl:w-96">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar nicho, software B2B, monetización, CPM..."
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition"
-          />
-          {searchQuery && (
+      <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex flex-col gap-3.5 shadow-xl backdrop-blur-sm">
+        {/* Tier 1: Search Bar & Primary Actions */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 justify-between">
+          {/* Responsive Search Input */}
+          <div className="relative flex-1 min-w-[240px]">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Buscar nicho, software B2B, monetización, CPM, subnichos..."
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-8 py-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition shadow-inner"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800 transition"
+                title="Limpiar búsqueda"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Action CTAs (Gemini AI Discovery & History) */}
+          <div className="flex items-center gap-2.5 shrink-0">
+            {/* AI Discovery CTA */}
             <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white"
+              onClick={onOpenDiscoverModal}
+              className="flex-1 sm:flex-initial bg-gradient-to-r from-rose-600 via-rose-500 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-bold px-3.5 py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-rose-600/25 transition active:scale-95 whitespace-nowrap"
             >
-              ✕
+              <Sparkles className="w-3.5 h-3.5 text-white animate-pulse" />
+              <span>Descubrir Nuevos Nichos</span>
             </button>
-          )}
+
+            {/* Niche History Button */}
+            <button
+              onClick={onOpenHistoryDrawer}
+              className="bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-200 font-semibold px-3 py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 hover:border-slate-700 transition shrink-0 whitespace-nowrap"
+              title="Abrir historial de sugerencias IA"
+            >
+              <History className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Historial</span>
+              {historyCount > 0 && (
+                <span className="bg-indigo-600 text-white font-mono text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                  {historyCount}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* Filter Controls Row */}
-        <div className="flex flex-wrap items-center gap-2 text-xs">
+        {/* Subtle separator */}
+        <div className="h-px bg-slate-800/80 w-full" />
+
+        {/* Tier 2: Filter Controls & Sorting (Responsive Flex) */}
+        <div className="flex flex-wrap items-center gap-2.5 text-xs">
           {/* Category Dropdown */}
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none focus:border-rose-500 cursor-pointer"
-          >
-            <option value="all">Todas las Categorías</option>
-            <option value="Finanzas">Finanzas & Riqueza</option>
-            <option value="Tecnología">IA & SaaS B2B</option>
-            <option value="Legal">Legal & Reclamaciones</option>
-            <option value="Salud">Longevidad & Biohacking</option>
-            <option value="Negocios">E-Commerce & High-Ticket</option>
-            <option value="Estilo de Vida">Lujo & Narrativa</option>
-          </select>
+          <div className="relative flex-1 sm:flex-initial min-w-[150px]">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none focus:border-rose-500 cursor-pointer appearance-none pr-8 transition hover:border-slate-700"
+            >
+              <option value="all">Todas las Categorías</option>
+              <option value="Finanzas">Finanzas & Riqueza</option>
+              <option value="Tecnología">IA & SaaS B2B</option>
+              <option value="Legal">Legal & Reclamaciones</option>
+              <option value="Salud">Longevidad & Biohacking</option>
+              <option value="Negocios">E-Commerce & High-Ticket</option>
+              <option value="Estilo de Vida">Lujo & Narrativa</option>
+            </select>
+            <div className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-[10px]">
+              ▼
+            </div>
+          </div>
 
           {/* Competition Dropdown */}
-          <select
-            value={selectedComp}
-            onChange={(e) => setSelectedComp(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none focus:border-rose-500 cursor-pointer"
-          >
-            <option value="all">Competencia (Todas)</option>
-            <option value="Baja">Competencia Baja</option>
-            <option value="Media">Competencia Media</option>
-            <option value="Alta">Competencia Alta</option>
-          </select>
+          <div className="relative flex-1 sm:flex-initial min-w-[130px]">
+            <select
+              value={selectedComp}
+              onChange={(e) => setSelectedComp(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none focus:border-rose-500 cursor-pointer appearance-none pr-8 transition hover:border-slate-700"
+            >
+              <option value="all">Competencia: Todas</option>
+              <option value="Baja">Competencia Baja</option>
+              <option value="Media">Competencia Media</option>
+              <option value="Alta">Competencia Alta</option>
+            </select>
+            <div className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-[10px]">
+              ▼
+            </div>
+          </div>
 
           {/* Sort By Dropdown */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none focus:border-rose-500 cursor-pointer"
-          >
-            <option value="opportunity">Mayor Oportunidad</option>
-            <option value="rpmDesc">Mayor RPM ($/1k)</option>
-            <option value="faceless">Más Fácil Faceless</option>
-            <option value="timeAsc">Menor Tiempo Producción</option>
-          </select>
+          <div className="relative flex-1 sm:flex-initial min-w-[150px]">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-300 focus:outline-none focus:border-rose-500 cursor-pointer appearance-none pr-8 transition hover:border-slate-700"
+            >
+              <option value="opportunity">Mayor Oportunidad</option>
+              <option value="rpmDesc">Mayor RPM ($/1k)</option>
+              <option value="faceless">Más Fácil Faceless</option>
+              <option value="timeAsc">Menor Tiempo Producción</option>
+            </select>
+            <div className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 text-[10px]">
+              ▼
+            </div>
+          </div>
 
           {/* 100% Faceless Toggle */}
-          <label className="flex items-center gap-2 text-slate-300 cursor-pointer bg-slate-950 border border-slate-800 px-3 py-2 rounded-xl hover:border-slate-700 transition">
+          <label className="flex items-center gap-2 text-slate-300 cursor-pointer bg-slate-950 border border-slate-800 px-3 py-2 rounded-xl hover:border-slate-700 transition whitespace-nowrap shrink-0">
             <input
               type="checkbox"
               checked={facelessOnly}
@@ -215,37 +264,11 @@ export const ExplorerTab: React.FC<ExplorerTabProps> = ({
           {/* Reset Filters */}
           <button
             onClick={resetFilters}
-            title="Restablecer filtros"
-            className="text-slate-400 hover:text-white px-2.5 py-2 bg-slate-950 border border-slate-800 rounded-xl hover:border-slate-700 transition flex items-center gap-1"
+            title="Restablecer todos los filtros"
+            className="text-slate-400 hover:text-white px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl hover:border-slate-700 transition flex items-center gap-1.5 whitespace-nowrap ml-auto sm:ml-0 shrink-0"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline text-[11px]">Limpiar</span>
-          </button>
-
-          <div className="h-4 w-px bg-slate-800 mx-1 hidden sm:block"></div>
-
-          {/* AI Discovery CTA */}
-          <button
-            onClick={onOpenDiscoverModal}
-            className="bg-gradient-to-r from-rose-600 via-rose-500 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-rose-600/25 transition active:scale-95 shrink-0"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-white" />
-            <span>Descubrir Nuevos Nichos</span>
-          </button>
-
-          {/* Niche History Button */}
-          <button
-            onClick={onOpenHistoryDrawer}
-            className="bg-slate-950 hover:bg-slate-850 border border-slate-800 text-slate-200 font-semibold px-3 py-2 rounded-xl text-xs flex items-center gap-1.5 hover:border-slate-700 transition shrink-0"
-            title="Abrir historial de sugerencias IA"
-          >
-            <History className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Historial</span>
-            {historyCount > 0 && (
-              <span className="bg-indigo-600 text-white font-mono text-[10px] px-1.5 py-0.2 rounded-full font-bold">
-                {historyCount}
-              </span>
-            )}
+            <span className="text-[11px]">Limpiar Filtros</span>
           </button>
         </div>
       </div>
